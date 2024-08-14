@@ -160,7 +160,7 @@ const formatLuminosity = (value) => {
   return `${fmt}${value}`;
 };
 
-const formatPosition = (coordinates) => {
+const formatPosition = (coordinates,symTable) => {
   if (!Array.isArray(coordinates)) {
     throw new Error(`Coordinates must be an array`);
   }
@@ -203,7 +203,7 @@ const formatPosition = (coordinates) => {
   m = m === 60 ? 59.99 : m;
   const lonM = Number(m).toFixed(2).padStart(5, "0");
 
-  return `${latD}${latM}${latO}/${lonD}${lonM}${lonO}`;
+  return `${latD}${latM}${latO}${symTable}${lonD}${lonM}${lonO}`;
 };
 
 const formatWxReport = ({
@@ -432,6 +432,8 @@ const formatPosData = (payload) => {
   let lon;
   let lat;
   let comment = payload.comment;
+  let symTable=payload.symbol.substr(0,1) || '/' ; //symbol table definition, default to primary table
+  let sym=payload.symbol.substr(1,1) || '0';    //symbol definition, default to a 0
 
   if (typeof payload.longitude !== "undefined" && payload.longitude !== null) {
     lon = payload.longitude;
@@ -456,8 +458,8 @@ const formatPosData = (payload) => {
   }
 
   let msg = "!";
-  msg += formatPosition([lon, lat]);
-  msg += "0";
+  msg += formatPosition([lon, lat],symTable);
+  msg += sym;
 
   if (typeof comment === "string") {
     msg += ` ${comment}`;

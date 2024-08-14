@@ -234,7 +234,7 @@ const formatWxReport = ({
   msg += formatDateTime(
     timestamp ? new Date(Date.parse(timestamp)) : new Date(),
   );
-  msg += formatPosition([longitude, latitude]);
+  msg += formatPosition([longitude, latitude],'/');
   msg += formatWindDirection(e.courseDeg);
   msg += `/${formatMphSpeed(e.speedMPerS)}`;
   msg += `g${formatMphSpeed(w.windGust)}`;
@@ -432,8 +432,8 @@ const formatPosData = (payload) => {
   let lon;
   let lat;
   let comment = payload.comment;
-  let symTable=payload.symbol.substr(0,1) || '/' ; //symbol table definition, default to primary table
-  let sym=payload.symbol.substr(1,1) || '0';    //symbol definition, default to a 0
+  const symTable=payload.symbol.substr(0,1) || "/" ; //symbol table definition, default to primary table
+  const sym=payload.symbol.substr(1,1) || "0";    //symbol definition, default to a 0
 
   if (typeof payload.longitude !== "undefined" && payload.longitude !== null) {
     lon = payload.longitude;

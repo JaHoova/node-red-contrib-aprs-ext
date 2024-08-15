@@ -432,11 +432,12 @@ const formatPosData = (payload) => {
   let lon;
   let lat;
   let comment = payload.comment;
+  let symbol = payload.symbol;
   var symTable;
   var sym;
-  if(typeof payload.symbol !== "undefined" && payload.symbol !== null){
-    symTable=payload.symbol.substr(0,1); //symbol table definition, default to primary table
-    sym=payload.symbol.substr(1,1);    //symbol definition, default to a 0
+  if(typeof symbol !== "undefined" && symbol !== null){
+    symTable=symbol.substr(0,1); //symbol table definition, default to primary table
+    sym=symbol.substr(1,1);    //symbol definition, default to a 0
   }else{
     symTable="/";
     sym="0";

@@ -77,6 +77,27 @@ const formatWindDirection = (value) => {
   return `_${value}`;
 };
 
+const formatDirection = (value) => {
+  if (typeof value === "undefined" || value === null) {
+    value = "...";
+  } else {
+    value = Math.round(value);
+
+    if (value < 0 || value > 360) {
+      throw new Error(`Direction value out of range, expected <0, 360>`);
+    }
+
+    // Since the string 000 means that the value is unavailable, we need to wrap
+    // 0 degrees to 360 degrees to represent true north properly.
+    if (value === 0) {
+      value = 360;
+    }
+
+    value = `${value}`.padStart(3, "0");
+  }
+  return `${value}`;
+};
+
 // Wind speed in m/s
 const formatMphSpeed = (value) => {
   if (typeof value === "undefined" || value === null) {

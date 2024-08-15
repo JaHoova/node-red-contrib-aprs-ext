@@ -91,6 +91,17 @@ const formatMphSpeed = (value) => {
   return `${value}`.padStart(3, "0");
 };
 
+const formatKtsSpeed = (value) => {
+  if (typeof value === "undefined" || value === null) {
+    return "...";
+  }
+  if (value < 0 || value > 999) {
+    throw new Error("Speed value is out of range");
+  }
+
+  return `${value}`.padStart(3, "0");
+};
+
 // The value is in millimeters and will be converted to hundreds of an inch
 const formatRain = (value) => {
   if (typeof value === "undefined" || value === null) {
@@ -435,6 +446,8 @@ const formatPosData = (payload) => {
   let symbol = payload.symbol;
   var symTable;
   var sym;
+  let course = payload.course;    //mag heading
+  let speed = payload.speed;    //knots
   if(typeof symbol !== "undefined" && symbol !== null){
     symTable=symbol.substr(0,1); //symbol table definition, default to primary table
     sym=symbol.substr(1,1);    //symbol definition, default to a 0
@@ -467,7 +480,11 @@ const formatPosData = (payload) => {
   let msg = "!";
   msg += formatPosition([lon, lat],symTable);
   msg += sym;
-
+ if(typeof course !== "undefined" && course !== null && typeof speed !== "undefined" && speed !== null){
+    msg+=formatWindDirection(course);
+    msg+="/";
+    msg+=formatKtsSpeed(speed);
+ }
   if (typeof comment === "string") {
     msg += ` ${comment}`;
   }

@@ -432,9 +432,15 @@ const formatPosData = (payload) => {
   let lon;
   let lat;
   let comment = payload.comment;
-  const symTable=payload.symbol.substr(0,1) || "/" ; //symbol table definition, default to primary table
-  const sym=payload.symbol.substr(1,1) || "0";    //symbol definition, default to a 0
-
+  var symTable;
+  var sym;
+  if(typeof payload.symbol !== "undefined" && payload.symbol !== null){
+    symTable=payload.symbol.substr(0,1); //symbol table definition, default to primary table
+    sym=payload.symbol.substr(1,1);    //symbol definition, default to a 0
+  }else{
+    symTable="/";
+    sym="0";
+  }
   if (typeof payload.longitude !== "undefined" && payload.longitude !== null) {
     lon = payload.longitude;
   } else if (typeof payload.lon !== "undefined" && payload.lon !== null) {

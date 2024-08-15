@@ -502,7 +502,7 @@ const formatPosData = (payload) => {
   msg += formatPosition([lon, lat],symTable);
   msg += sym;
  if(typeof course !== "undefined" && course !== null && typeof speed !== "undefined" && speed !== null){
-    msg+=formatWindDirection(course);
+    msg+=formatDirection(course);
     msg+="/";
     msg+=formatKtsSpeed(speed);
  }

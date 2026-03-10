@@ -65,17 +65,24 @@ const makeRXNode = (RED) => {
       node.status({ fill: "purple", shape: "square", text: "Ping" });
     };
 
-    ws.onmessage = (data) => {
+ws.onmessage = async (data) => {
       node.status({ fill: "green", shape: "dot", text: "Receiving" });
-
-      if (typeof data.data === "string" && data.data.startsWith("# ")) {
-        if (data.data.includes("verified")) {
+      let raw;
+      if (typeof data.data === "string") {
+        raw = data.data;
+      } else if (typeof Blob !== "undefined" && data.data instanceof Blob) {
+        raw = await data.data.text();
+      } else if (Buffer.isBuffer(data.data)) {
+        raw = data.data.toString("utf8");
+      } else {
+        raw = String(data.data);
+      }
+      if (raw.startsWith("# ")) {
+        if (raw.includes("verified")) {
           node.status({ fill: "blue", shape: "dot", text: "Connected" });
         }
       } else {
-        let aprsFrame = aprsParser.parse(`${data.data}`);
-
-        // FIXME: Node.js has suppored 'object spread' since v5/v8?
+        let aprsFrame = aprsParser.parse(raw);
         /*jshint -W119*/
         node.send({ payload: { ...aprsFrame } });
         /*jshint +W119*/

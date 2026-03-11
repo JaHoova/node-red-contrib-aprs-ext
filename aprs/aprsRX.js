@@ -66,28 +66,29 @@ const makeRXNode = (RED) => {
     };
 
 ws.onmessage = async (data) => {
-      node.status({ fill: "green", shape: "dot", text: "Receiving" });
-      let raw;
-      if (typeof data.data === "string") {
-        raw = data.data;
-      } else if (typeof Blob !== "undefined" && data.data instanceof Blob) {
-        raw = await data.data.text();
-      } else if (Buffer.isBuffer(data.data)) {
-        raw = data.data.toString("utf8");
-      } else {
-        raw = String(data.data);
-      }
-      if (raw.startsWith("# ")) {
-        if (raw.includes("verified")) {
-          node.status({ fill: "blue", shape: "dot", text: "Connected" });
-        }
-      } else {
-        let aprsFrame = aprsParser.parse(raw);
-        /*jshint -W119*/
-        node.send({ payload: { ...aprsFrame } });
-        /*jshint +W119*/
-      }
-    };
+  node.status({ fill: "green", shape: "dot", text: "Receiving" });
+  
+  // APRS-IS WebSocket always sends binary — convert to string first
+  let raw;
+  if (Buffer.isBuffer(data.data)) {
+    raw = data.data.toString("utf8");
+  } else if (data.data instanceof Blob) {
+    raw = await data.data.text();
+  } else {
+    raw = String(data.data);
+  }
+
+  if (raw.startsWith("# ")) {
+    if (raw.includes("verified")) {
+      node.status({ fill: "blue", shape: "dot", text: "Connected" });
+    }
+  } else {
+    let aprsFrame = aprsParser.parse(raw);
+    /*jshint -W119*/
+    node.send({ payload: { ...aprsFrame } });
+    /*jshint +W119*/
+  }
+};
 
     ws.onclose = (evt) => {
       node.status({ fill: "orange", shape: "square", text: "Disconnecting" });
